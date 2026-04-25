@@ -1,24 +1,68 @@
-
 console.log("🔥 ez_tablet CLEAN BOOT");
 
-// =========================
-// STATE
-// =========================
+/* =========================
+   STATE
+========================= */
 window.tabletState = {
     open: false,
     app: "home"
 };
 
-// =========================
-// ROOT
-// =========================
+/* =========================
+   ROOT
+========================= */
 function getRoot() {
     return document.getElementById("root");
 }
 
-// =========================
-// NUI EVENTS
-// =========================
+/* =========================
+   CLOSE TABLET
+========================= */
+function closeTablet() {
+
+    window.tabletState.open = false;
+    window.tabletState.app = "home";
+
+    fetch(`https://${GetParentResourceName()}/closeTablet`, {
+        method: "POST",
+        body: "{}"
+    });
+
+    render();
+}
+
+/* =========================
+   GO HOME
+========================= */
+function goHome() {
+    window.tabletState.app = "home";
+    render();
+}
+
+/* =========================
+   KEYBOARD HANDLING
+========================= */
+window.addEventListener("keydown", function (event) {
+
+    if (!window.tabletState.open) return;
+
+    const key = event.key;
+
+    if (key === "Escape" || key === "Backspace") {
+
+        event.preventDefault();
+
+        if (window.tabletState.app !== "home") {
+            goHome();
+        } else {
+            closeTablet();
+        }
+    }
+});
+
+/* =========================
+   NUI EVENTS
+========================= */
 window.addEventListener("message", (event) => {
 
     const data = event.data;
@@ -33,8 +77,7 @@ window.addEventListener("message", (event) => {
     }
 
     if (data.action === "close") {
-        window.tabletState.open = false;
-        render();
+        closeTablet();
     }
 
     if (data.action === "setApp") {
@@ -43,9 +86,9 @@ window.addEventListener("message", (event) => {
     }
 });
 
-// =========================
-// RENDER
-// =========================
+/* =========================
+   RENDER
+========================= */
 function render() {
 
     const root = getRoot();

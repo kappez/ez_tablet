@@ -1,4 +1,3 @@
-
 function TabletApp() {
 
     const e = React.createElement;
@@ -28,14 +27,34 @@ function TabletApp() {
 
         default:
             App = HomeApp;
+            break;
+    }
+
+    function goHome() {
+        window.tabletState.app = "home";
+        render();
     }
 
     return e("div", { className: "tabletShell" },
 
         e("div", { className: "tabletBackground" }),
 
-        e("div", { className: "tabletTopBar" }, "ez Tablet"),
+        /* TOP BAR */
+        e("div", { className: "tabletTopBar" },
 
+            /* LEFT TITLE */
+            e("div", { className: "topbarTitle" }, "ez_tablet"),
+
+            /* RIGHT BUTTON */
+            state.app !== "home"
+                ? e("button", {
+                    className: "topbarClose",
+                    onClick: goHome
+                }, "Back")
+                : e("div", null)
+        ),
+
+        /* APP CONTENT */
         e("div", { className: "tabletContent" },
             e(App)
         )

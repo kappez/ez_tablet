@@ -66,7 +66,6 @@ body {
     z-index: 0;
 }
 
-/* optional subtle overlay noise effect */
 .tabletBackground::after {
     content: "";
     position: absolute;
@@ -85,7 +84,7 @@ body {
 
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
 
     padding: 0 12px;
 
@@ -93,6 +92,24 @@ body {
     font-weight: bold;
 
     z-index: 2;
+}
+
+.topbarTitle {
+    color: white;
+}
+
+.topbarClose {
+    background: #2a2f45;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.topbarClose:hover {
+    background: #3a4060;
 }
 
 /* =========================
@@ -121,7 +138,6 @@ body {
     font-size: 20px;
 }
 
-/* app buttons */
 .home button {
     width: 180px;
     padding: 10px;
@@ -153,9 +169,6 @@ body {
     height: 100%;
 }
 
-/* =========================
-   EMAIL / LIST ITEMS
-========================= */
 .appPanel div {
     background: #1b1f2e;
     padding: 10px;
@@ -190,7 +203,6 @@ button {
     border-radius: 6px;
 }
 
-/* primary buttons */
 button.primary {
     background: #3b82f6;
     color: white;
@@ -201,7 +213,6 @@ button.primary:hover {
     background: #2563eb;
 }
 
-/* secondary buttons */
 button.secondary {
     background: #2a2f45;
     color: white;
