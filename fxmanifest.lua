@@ -12,6 +12,7 @@ files {
     'html/tabletApp.js',
     'html/app.js',
     'html/style.css',
+    
 
     -- CORE MODULES
     'html/core/home.js',
@@ -21,7 +22,8 @@ files {
     'html/apps/bank.js',
     'html/apps/cmd.js',
     'html/apps/email.js',
-    'html/apps/YellowPages.js'
+    'html/apps/YellowPages.js',
+    'html/apps/garage.js',
 }
 
 shared_scripts {
@@ -33,12 +35,14 @@ shared_scripts {
 client_scripts {
     'client/main.lua',
     'client/email.lua',
-    'client/yellowpages.lua'
+    'client/yellowpages.lua',
+    'client/garage.lua'
 }
 
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
     'server/main.lua',
     'server/email.lua',
-    'server/yellowpages.lua'
+    'server/yellowpages.lua',
+    'server/garage.lua'
 }

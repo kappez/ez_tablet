@@ -668,3 +668,98 @@ button.secondary:hover {
     font-size: 12px;
     opacity: 0.9;
 }
+
+.garageApp {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.garageTopBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 10px 12px;
+    border-radius: 10px;
+
+    background: #1b1f2e;
+}
+
+.garageTitle {
+    font-size: 18px;
+    font-weight: bold;
+    color: #60a5fa;
+}
+
+.garageRefresh {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 8px;
+
+    background: rgba(255,255,255,0.06);
+    color: white;
+    cursor: pointer;
+}
+
+.garageRefresh:hover {
+    background: rgba(255,255,255,0.12);
+}
+
+.garageCard {
+    background: #23283a;
+    padding: 10px;
+    border-radius: 10px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.garageName {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.garagePlate {
+    font-size: 13px;
+    opacity: 0.8;
+}
+
+.garageStatus {
+    font-size: 13px;
+    color: #93c5fd;
+}
+
+.garageGpsBtn {
+    margin-top: 6px;
+    padding: 7px 10px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #2563eb;
+    color: white;
+    cursor: pointer;
+}
+
+.garageGpsBtn:hover {
+    background: #1d4ed8;
+}
+
+.garageEmpty {
+    opacity: 0.7;
+    padding: 10px;
+}
+
+.garageClickable {
+    cursor: pointer;
+    color: #38bdf8;
+    transition: 0.15s;
+}
+
+.garageClickable:hover {
+    text-decoration: underline;
+    color: #0ea5e9;
+}

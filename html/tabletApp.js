@@ -26,9 +26,10 @@ function TabletApp() {
             App = CmdApp;
             break;
 
-        // =========================
-        // 📒 YELLOW PAGES (NEW)
-        // =========================
+        case "garage":
+            App = GarageApp;
+            break;
+
         case "yellowpages":
             App = YellowPagesApp;
             break;

@@ -11,6 +11,7 @@ function HomeApp() {
         e("h1", null, "Apps"),
 
         e("button", { onClick: () => open("email") }, "Email"),
+        e("button", { onClick: () => open("garage") }, "Ezy Garage"),
         e("button", { onClick: () => open("yellowpages") }, "Yellow Pages"),
         e("button", { onClick: () => open("calculator") }, "Calculator"),
         e("button", { onClick: () => open("bank") }, "Bank"),
