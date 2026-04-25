@@ -1,11 +1,13 @@
 local tabletOpen = false
 
 --====================================
--- OPEN TABLET
+-- OPEN TABLET (FROM ITEM / COMMAND)
 --====================================
 RegisterNetEvent("ez_tablet:open", function()
 
-    print("[TABLET DEBUG] open event received")
+    if tabletOpen then return end
+
+    tabletOpen = true
 
     SetNuiFocus(true, true)
     SetNuiFocusKeepInput(false)
@@ -13,43 +15,77 @@ RegisterNetEvent("ez_tablet:open", function()
     SendNUIMessage({
         action = "open"
     })
+
+    print("[TABLET DEBUG] open event received")
 end)
 
 --====================================
--- CLOSE TABLET
+-- CLOSE TABLET (FROM NUI)
 --====================================
 RegisterNUICallback("closeTablet", function(_, cb)
+
+    if not tabletOpen then
+        cb("ok")
+        return
+    end
 
     tabletOpen = false
 
     SetNuiFocus(false, false)
+    SetNuiFocusKeepInput(false)
 
     SendNUIMessage({
         action = "close"
     })
 
+    print("[TABLET DEBUG] tablet closed")
+
     cb("ok")
 end)
 
 --====================================
--- ESC CLOSE
+-- ESC / BACKSPACE HANDLING (CLIENT SIDE SAFETY NET)
 --====================================
 CreateThread(function()
+
     while true do
+        Wait(0)
 
         if tabletOpen then
-            Wait(0)
 
             DisableControlAction(0, 1, true)
             DisableControlAction(0, 2, true)
 
+            -- ESC
             if IsControlJustPressed(0, 322) then
-                tabletOpen = false
-                SetNuiFocus(false, false)
-                SendNUIMessage({ action = "close" })
+                TriggerEvent("ez_tablet:close")
+            end
+
+            -- BACKSPACE
+            if IsControlJustPressed(0, 177) then
+                TriggerEvent("ez_tablet:close")
             end
         else
-            Wait(500)
+            Wait(250)
         end
     end
+end)
+
+--====================================
+-- INTERNAL CLOSE EVENT (SAFE RESET)
+--====================================
+RegisterNetEvent("ez_tablet:close", function()
+
+    if not tabletOpen then return end
+
+    tabletOpen = false
+
+    SetNuiFocus(false, false)
+    SetNuiFocusKeepInput(false)
+
+    SendNUIMessage({
+        action = "close"
+    })
+
+    print("[TABLET DEBUG] closed via keybind/event")
 end)

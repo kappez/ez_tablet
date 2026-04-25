@@ -1,22 +1,16 @@
 console.log("🔥 ez_tablet CLEAN BOOT");
 
-/* =========================
-   STATE
-========================= */
 window.tabletState = {
     open: false,
     app: "home"
 };
 
-/* =========================
-   ROOT
-========================= */
 function getRoot() {
     return document.getElementById("root");
 }
 
 /* =========================
-   CLOSE TABLET
+   CLOSE TABLET (SAFE)
 ========================= */
 function closeTablet() {
 
@@ -26,7 +20,7 @@ function closeTablet() {
     fetch(`https://${GetParentResourceName()}/closeTablet`, {
         method: "POST",
         body: "{}"
-    });
+    }).catch(() => {});
 
     render();
 }
@@ -40,7 +34,7 @@ function goHome() {
 }
 
 /* =========================
-   KEYBOARD HANDLING
+   KEY CONTROLS
 ========================= */
 window.addEventListener("keydown", function (event) {
 
@@ -48,12 +42,35 @@ window.addEventListener("keydown", function (event) {
 
     const key = event.key;
 
-    if (key === "Escape" || key === "Backspace") {
+    // 🚨 DO NOT INTERCEPT TEXT INPUTS
+    const tag = document.activeElement?.tagName?.toLowerCase();
+
+    const isTyping =
+        tag === "input" ||
+        tag === "textarea" ||
+        document.activeElement?.isContentEditable;
+
+    // ESC ALWAYS WORKS
+    if (key === "Escape") {
+        event.preventDefault();
+
+        if (window.tabletState.app !== "home") {
+            window.tabletState.app = "home";
+            render();
+        } else {
+            closeTablet();
+        }
+        return;
+    }
+
+    // BACKSPACE ONLY WORKS IF NOT TYPING
+    if (key === "Backspace" && !isTyping) {
 
         event.preventDefault();
 
         if (window.tabletState.app !== "home") {
-            goHome();
+            window.tabletState.app = "home";
+            render();
         } else {
             closeTablet();
         }
@@ -61,12 +78,17 @@ window.addEventListener("keydown", function (event) {
 });
 
 /* =========================
-   NUI EVENTS
+   NUI MESSAGES (FIXED GUARD)
 ========================= */
 window.addEventListener("message", (event) => {
 
     const data = event.data;
     if (!data) return;
+
+    // 🚨 CRITICAL FIX: ignore all messages when closed
+    if (!window.tabletState.open && data.action !== "open") {
+        return;
+    }
 
     console.log("[TABLET EVENT]", data);
 
@@ -77,7 +99,9 @@ window.addEventListener("message", (event) => {
     }
 
     if (data.action === "close") {
-        closeTablet();
+        window.tabletState.open = false;
+        window.tabletState.app = "home";
+        render();
     }
 
     if (data.action === "setApp") {

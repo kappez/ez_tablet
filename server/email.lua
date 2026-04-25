@@ -1,19 +1,15 @@
+
 local ESX = exports["es_extended"]:getSharedObject()
 
 --====================================
--- GENERATE PLAYER EMAIL
+-- GENERATE EMAIL
 --====================================
 local function GetPlayerEmail(xPlayer)
 
     local name = xPlayer.getName():lower()
 
-    -- Replace spaces with dots
     name = name:gsub("%s+", ".")
-
-    -- Remove weird duplicate dots
     name = name:gsub("%.%.+", ".")
-
-    -- Trim dots from start/end
     name = name:gsub("^%.", "")
     name = name:gsub("%.$", "")
 
@@ -35,41 +31,61 @@ RegisterNetEvent("ez_email:requestEmail", function()
         return
     end
 
-    local email = GetPlayerEmail(xPlayer)
-
     TriggerClientEvent("ez_email:returnEmail", src, {
-        email = email
+        email = GetPlayerEmail(xPlayer)
     })
 end)
 
 --====================================
--- GET INBOX
+-- GET INBOX (FIXED: DELETE SUPPORT)
 --====================================
 lib.callback.register("ez_email:getInbox", function(source, email)
 
-    print("[EMAIL DEBUG] callback email = [" .. tostring(email) .. "]")
+    print("[EMAIL DEBUG] inbox request:", email)
 
     local result = MySQL.query.await([[
         SELECT *
         FROM ez_emails
         WHERE receiver = ?
+        AND (deleted IS NULL OR deleted = 0)
         ORDER BY created_at DESC
     ]], { email })
 
-    print("[EMAIL DEBUG] rows found:", result and #result or 0)
+    print("[EMAIL DEBUG] inbox rows:", result and #result or 0)
 
     return result or {}
 end)
 
 --====================================
--- MARK READ
+-- MARK AS READ
 --====================================
 RegisterNetEvent("ez_email:markRead", function(id)
-    MySQL.update("UPDATE ez_emails SET is_read = 1 WHERE id = ?", { id })
+
+    MySQL.update([[
+        UPDATE ez_emails
+        SET is_read = 1
+        WHERE id = ?
+    ]], { id })
+
 end)
 
 --====================================
--- SEND REPLY
+-- DELETE EMAIL (PERMANENT FIX LOGIC)
+--====================================
+RegisterNetEvent("ez_email:markDeleted", function(id)
+
+    MySQL.update([[
+        UPDATE ez_emails
+        SET deleted = 1
+        WHERE id = ?
+    ]], { id })
+
+    print("[EMAIL DEBUG] deleted email id:", id)
+
+end)
+
+--====================================
+-- SEND EMAIL / REPLY
 --====================================
 RegisterNetEvent("ez_email:sendReply", function(data)
 

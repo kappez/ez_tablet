@@ -222,3 +222,80 @@ button.secondary {
 button.secondary:hover {
     background: #3a4060;
 }
+
+.emailApp {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.emailItem {
+    background: #1b1f2e;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.emailItem:hover {
+    background: #23283a;
+}
+
+.emailThreadItem {
+    background: #1b1f2e;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+/* COMPOSE MODAL */
+.composeModal {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.composeBox {
+    width: 400px;
+    background: #0f111a;
+    padding: 15px;
+    border-radius: 10px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.emailAppLayout {
+    display: flex;
+    height: 100%;
+    gap: 10px;
+}
+
+.emailSidebar {
+    width: 120px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.emailSidebar button {
+    padding: 8px;
+    background: #1b1f2e;
+    color: white;
+}
+
+.emailSidebar button.active {
+    background: #3b82f6;
+}
+
+.emailMain {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+}
