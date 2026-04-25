@@ -1,20 +1,8 @@
-window.registerApp("cmd", function () {
-
+function CmdApp() {
     const e = React.createElement;
 
-    return e("div", { className: "appPanel" },
-
-        e("h2", null, "Command Console"),
-
-        e("textarea", {
-            placeholder: "type command...",
-            style: { width: "100%", height: "200px" },
-            onKeyDown: (ev) => {
-                if (ev.key === "Enter") {
-                    ev.preventDefault();
-                    console.log("command executed");
-                }
-            }
-        })
+    return e("div", null,
+        e("h2", null, "CMD"),
+        e("div", null, "Terminal loaded")
     );
-});
+}

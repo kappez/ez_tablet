@@ -1,10 +1,8 @@
-window.registerApp("bank", function () {
-
+function BankApp() {
     const e = React.createElement;
 
-    return e("div", { className: "appPanel" },
-
+    return e("div", null,
         e("h2", null, "Bank"),
-        e("div", null, "Bank system placeholder")
+        e("div", null, "Bank loaded")
     );
-});
+}

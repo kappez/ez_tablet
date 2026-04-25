@@ -1,6 +1,4 @@
-
 function HomeApp() {
-
     const e = React.createElement;
 
     function open(app) {
