@@ -1,24 +1,45 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <link rel="stylesheet" href="style.css" />
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>ez_tablet</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- =========================
+         REACT (MUST LOAD FIRST)
+    ========================== -->
     <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
-    
+
+    <!-- =========================
+         STYLES
+    ========================== -->
+    <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
 
-<div id="root"></div>
+    <!-- TABLET ROOT -->
+    <div id="root"></div>
 
-<script src="app.js"></script>
+    <!-- =========================
+         CORE SYSTEM (ORDER MATTERS)
+    ========================== -->
 
-<script src="core/home.js"></script>
-<script src="apps/calculator.js"></script>
-<script src="apps/bank.js"></script>
-<script src="apps/cmd.js"></script>
-<script src="apps/email.js"></script>
+    <!-- 1. APP BOOT / STATE SYSTEM -->
+    <script src="app.js"></script>
+
+    <!-- 2. MAIN TABLET WRAPPER -->
+    <script src="tabletApp.js"></script>
+
+    <!-- 3. APPS (must load AFTER core) -->
+    <script src="apps/home.js"></script>
+    <script src="apps/email.js"></script>
+    <script src="apps/calculator.js"></script>
+    <script src="apps/bank.js"></script>
+    <script src="apps/cmd.js"></script>
 
 </body>
 </html>

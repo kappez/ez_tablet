@@ -1,39 +1,20 @@
-window.registerApp("home", function ({ setActiveApp }) {
+
+function HomeApp() {
 
     const e = React.createElement;
 
-    //====================================================
-    // APP ICON COMPONENT (colored square style)
-    //====================================================
-    function Icon({ color, label, app }) {
-        return e("div", {
-            className: "appIcon",
-            onClick: () => setActiveApp(app)
-        },
-
-            e("div", {
-                className: "iconBox",
-                style: { background: color }
-            }),
-
-            e("div", { className: "label" }, label)
-        );
+    function open(app) {
+        window.tabletState.app = app;
+        render();
     }
 
-    //====================================================
-    // HOME SCREEN
-    //====================================================
-    return e("div", { className: "homeScreen" },
+    return e("div", { className: "home" },
 
-        e("div", { className: "appGrid" },
+        e("h1", null, "Apps"),
 
-            e(Icon, { color: "#38bdf8", label: "Calculator", app: "calculator" }),
-            e(Icon, { color: "#22c55e", label: "Bank", app: "bank" }),
-            e(Icon, { color: "#a855f7", label: "CMD", app: "cmd" }),
-            e(Icon, { color: "#f59e0b", label: "Settings", app: "settings" }),
-            e(Icon, { color: "#0bf51f", label: "ezmail", app: "email" })
-
-        ),
+        e("button", { onClick: () => open("email") }, "Email"),
+        e("button", { onClick: () => open("calculator") }, "Calculator"),
+        e("button", { onClick: () => open("bank") }, "Bank"),
+        e("button", { onClick: () => open("cmd") }, "CMD")
     );
-});
-
+}
