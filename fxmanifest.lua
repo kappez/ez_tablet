@@ -9,7 +9,7 @@ ui_page 'html/index.html'
 files {
     -- CORE UI
     'html/index.html',
-    'html/tabletApp.html',
+    'html/tabletApp.js',
     'html/app.js',
     'html/style.css',
 
