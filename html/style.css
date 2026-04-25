@@ -1,5 +1,5 @@
-
-html, body {
+html,
+body {
     margin: 0;
     padding: 0;
     width: 100%;
@@ -10,15 +10,50 @@ html, body {
 }
 
 /* =========================
+   ROOT CENTERING
+========================= */
+#root {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* =========================
    MAIN TABLET SHELL
 ========================= */
 .tabletShell {
-    position: absolute;
-    width: 100%;
-    height: 100%;
+    position: relative;
+
+    width: 900px;
+    height: 620px;
+
     display: flex;
     flex-direction: column;
+
     color: white;
+
+    border-radius: 26px;
+    overflow: hidden;
+
+    border: 8px solid #111;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65);
+}
+
+/* front camera dot */
+.tabletShell::before {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 10px;
+    background: #000;
+    border-radius: 50%;
+    z-index: 5;
 }
 
 /* =========================
@@ -47,11 +82,16 @@ html, body {
     height: 42px;
     background: rgba(0, 0, 0, 0.65);
     backdrop-filter: blur(6px);
+
     display: flex;
     align-items: center;
+    justify-content: center;
+
     padding: 0 12px;
+
     font-size: 14px;
     font-weight: bold;
+
     z-index: 2;
 }
 
@@ -62,6 +102,7 @@ html, body {
     flex: 1;
     position: relative;
     z-index: 2;
+
     padding: 12px;
     overflow: hidden;
 }
@@ -80,16 +121,20 @@ html, body {
     font-size: 20px;
 }
 
-/* app buttons grid */
+/* app buttons */
 .home button {
-    width: 160px;
+    width: 180px;
     padding: 10px;
+
     border: none;
     border-radius: 8px;
+
     background: #1f2333;
     color: white;
+
     cursor: pointer;
     text-align: left;
+
     transition: 0.15s;
 }
 
@@ -118,20 +163,26 @@ html, body {
 }
 
 /* =========================
-   INPUTS (email reply etc)
+   INPUTS
 ========================= */
-textarea, input {
+textarea,
+input {
     width: 100%;
+
     background: #0f111a;
     color: white;
+
     border: 1px solid #2a2f45;
     border-radius: 6px;
+
     padding: 10px;
     outline: none;
+
+    box-sizing: border-box;
 }
 
 /* =========================
-   BUTTONS (global)
+   BUTTONS GLOBAL
 ========================= */
 button {
     cursor: pointer;
@@ -139,7 +190,7 @@ button {
     border-radius: 6px;
 }
 
-/* send / action buttons */
+/* primary buttons */
 button.primary {
     background: #3b82f6;
     color: white;
@@ -150,7 +201,7 @@ button.primary:hover {
     background: #2563eb;
 }
 
-/* back button */
+/* secondary buttons */
 button.secondary {
     background: #2a2f45;
     color: white;
