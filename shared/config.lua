@@ -33,3 +33,15 @@ Config.YellowPagesJobs = {
         color = "#f59e0b"
     }
 }
+
+Config.Garages = {
+    ["VespucciBoulevard"] = {
+        label = "Vespucci Boulevard",
+        coords = vec3(-285.2, -886.5, 31.0)
+    },
+
+    ["SanAndreasAvenue"] = {
+        label = "San Andreas Avenue",
+        coords = vec3(216.4, -786.6, 30.8)
+    }
+}
