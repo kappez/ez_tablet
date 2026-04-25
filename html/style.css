@@ -404,3 +404,173 @@ button.secondary:hover {
 .emailSearch:focus {
     border-color: #3b82f6;
 }
+
+/* =========================
+   YELLOW PAGES APP
+========================= */
+
+.yellowPagesApp {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.yellowHeader {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffd84d;
+}
+
+.yellowCard {
+    background: linear-gradient(135deg, #1b1f2e, #22283a);
+    border-left: 4px solid #ffd84d;
+
+    padding: 10px;
+    border-radius: 10px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    transition: 0.15s;
+}
+
+.yellowCard:hover {
+    transform: scale(1.00);
+    background: linear-gradient(135deg, #232a3f, #2a3150);
+}
+
+.yellowName {
+    font-weight: bold;
+    color: white;
+}
+
+.yellowJob {
+    font-size: 20px;
+    opacity: 0.8;
+}
+
+.yellowPhone {
+    font-size: 13px;
+    color: #ffd84d;
+}
+
+.emptyState {
+    opacity: 0.6;
+    font-style: italic;
+}
+
+.yellowCategory {
+    margin-bottom: 12px;
+}
+
+.yellowCategoryHeader {
+        font-size: 20px;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: bold;
+    margin-bottom: 6px;
+
+    color: white;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+.yellowCard {
+    background: #23283a;
+    padding: 8px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    margin-left: 10px;
+
+    transition: 0.15s;
+}
+
+.yellowCard:hover {
+    background: #2c3247;
+}
+
+.yellowTopBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 10px 12px;
+    margin-bottom: 10px;
+
+    background: #1b1f2e;
+    border-radius: 10px;
+}
+
+.yellowTitle {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* refresh icon button */
+.yellowRefreshIcon {
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-size: 18px;
+    color: white;
+
+    background: rgba(255,255,255,0.06);
+
+    transition: 0.15s;
+}
+
+.yellowRefreshIcon:hover {
+    background: rgba(255,255,255,0.12);
+    transform: rotate(90deg);
+}
+
+.clickablePhone {
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.clickablePhone:hover {
+    color: #3b82f6;
+    text-decoration: underline;
+}
+
+.yellowActions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-top: 4px;
+}
+
+.yellowBtn {
+    padding: 6px 10px;
+    border-radius: 6px;
+
+    border: none;
+    cursor: pointer;
+
+    font-size: 12px;
+
+    transition: 0.15s;
+}
+
+.yellowBtn.call {
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.yellowBtn.call:hover {
+    background: rgba(255, 255, 255, 0.15);
+}

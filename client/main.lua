@@ -1,3 +1,4 @@
+
 local tabletOpen = false
 
 --====================================
@@ -9,6 +10,7 @@ RegisterNetEvent("ez_tablet:open", function()
 
     tabletOpen = true
 
+    -- 🔥 CRITICAL FIX FOR KEYBOARDS (Nordic / AltGr / symbols)
     SetNuiFocus(true, true)
     SetNuiFocusKeepInput(false)
 
@@ -44,29 +46,34 @@ RegisterNUICallback("closeTablet", function(_, cb)
 end)
 
 --====================================
--- ESC / BACKSPACE HANDLING (CLIENT SIDE SAFETY NET)
+-- SAFE KEY HANDLING (NO INPUT BREAKING)
 --====================================
 CreateThread(function()
 
     while true do
-        Wait(0)
 
-        if tabletOpen then
+        if not tabletOpen then
+            Wait(500)
+        else
+            Wait(0)
 
-            DisableControlAction(0, 1, true)
-            DisableControlAction(0, 2, true)
+            -- ❌ DO NOT disable look controls globally anymore
+            -- This can interfere with NUI + keyboard layouts
+            -- (Removed: DisableControlAction spam loop)
 
-            -- ESC
+            -- =========================
+            -- ESC ONLY
+            -- =========================
             if IsControlJustPressed(0, 322) then
                 TriggerEvent("ez_tablet:close")
             end
 
-            -- BACKSPACE
+            -- =========================
+            -- BACKSPACE ONLY (SAFE NAVIGATION)
+            -- =========================
             if IsControlJustPressed(0, 177) then
                 TriggerEvent("ez_tablet:close")
             end
-        else
-            Wait(250)
         end
     end
 end)

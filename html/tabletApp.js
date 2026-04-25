@@ -1,3 +1,4 @@
+
 function TabletApp() {
 
     const e = React.createElement;
@@ -23,6 +24,13 @@ function TabletApp() {
 
         case "cmd":
             App = CmdApp;
+            break;
+
+        // =========================
+        // 📒 YELLOW PAGES (NEW)
+        // =========================
+        case "yellowpages":
+            App = YellowPagesApp;
             break;
 
         default:

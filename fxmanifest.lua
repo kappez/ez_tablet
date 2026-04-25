@@ -20,21 +20,25 @@ files {
     'html/apps/calculator.js',
     'html/apps/bank.js',
     'html/apps/cmd.js',
-    'html/apps/email.js'
+    'html/apps/email.js',
+    'html/apps/YellowPages.js'
 }
 
 shared_scripts {
     '@es_extended/imports.lua',
+    'shared/config.lua',
     '@ox_lib/init.lua'
 }
 
 client_scripts {
     'client/main.lua',
-    'client/email.lua'
+    'client/email.lua',
+    'client/yellowpages.lua'
 }
 
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
     'server/main.lua',
-    'server/email.lua'
+    'server/email.lua',
+    'server/yellowpages.lua'
 }

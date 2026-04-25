@@ -1,3 +1,4 @@
+
 console.log("🔥 ez_tablet CLEAN BOOT");
 
 window.tabletState = {
@@ -10,7 +11,7 @@ function getRoot() {
 }
 
 /* =========================
-   CLOSE TABLET (SAFE)
+   CLOSE TABLET
 ========================= */
 function closeTablet() {
 
@@ -34,24 +35,38 @@ function goHome() {
 }
 
 /* =========================
-   KEY CONTROLS
+   INPUT DETECTION (SAFE)
+========================= */
+function isTypingField() {
+    const el = document.activeElement;
+    if (!el) return false;
+
+    const tag = el.tagName?.toLowerCase();
+
+    return (
+        tag === "input" ||
+        tag === "textarea" ||
+        el.isContentEditable
+    );
+}
+
+/* =========================
+   SAFE KEY HANDLING (FIXED FOR ALTGR)
 ========================= */
 window.addEventListener("keydown", function (event) {
 
     if (!window.tabletState.open) return;
 
-    const key = event.key;
+    // 🚨 CRITICAL: NEVER interfere with typing OR IME
+    if (isTypingField()) return;
 
-    // 🚨 DO NOT INTERCEPT TEXT INPUTS
-    const tag = document.activeElement?.tagName?.toLowerCase();
+    // 🚨 IMPORTANT FIX:
+    // DO NOT block ANY modifier combos globally
+    // This is what was breaking AltGr @
+    // (We remove this entirely)
 
-    const isTyping =
-        tag === "input" ||
-        tag === "textarea" ||
-        document.activeElement?.isContentEditable;
+    if (event.key === "Escape") {
 
-    // ESC ALWAYS WORKS
-    if (key === "Escape") {
         event.preventDefault();
 
         if (window.tabletState.app !== "home") {
@@ -60,11 +75,11 @@ window.addEventListener("keydown", function (event) {
         } else {
             closeTablet();
         }
+
         return;
     }
 
-    // BACKSPACE ONLY WORKS IF NOT TYPING
-    if (key === "Backspace" && !isTyping) {
+    if (event.key === "Backspace") {
 
         event.preventDefault();
 
@@ -78,14 +93,13 @@ window.addEventListener("keydown", function (event) {
 });
 
 /* =========================
-   NUI MESSAGES (FIXED GUARD)
+   NUI MESSAGES
 ========================= */
 window.addEventListener("message", (event) => {
 
     const data = event.data;
     if (!data) return;
 
-    // 🚨 CRITICAL FIX: ignore all messages when closed
     if (!window.tabletState.open && data.action !== "open") {
         return;
     }
