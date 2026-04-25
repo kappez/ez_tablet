@@ -26,7 +26,7 @@ function EmailApp() {
 
         const handler = (event) => {
             if (event.data?.type === "emailData") {
-                setEmail(event.data.email);
+                setEmail(event.data.email || "");
                 loadInbox(event.data.email);
             }
         };
@@ -42,35 +42,37 @@ function EmailApp() {
     // =========================
     function loadInbox(emailAddr) {
 
+        if (!emailAddr) return;
+
         fetch(`https://${GetParentResourceName()}/getInbox`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email: emailAddr })
         })
         .then(res => res.json())
-        .then(setInbox);
+        .then(data => {
+            setInbox(Array.isArray(data) ? data : []);
+        });
     }
 
     // =========================
-    // REFRESH (manual only)
+    // REFRESH
     // =========================
     function refresh() {
         loadInbox(email);
     }
 
     // =========================
-    // OPEN THREAD + MARK READ (LIVE UI)
+    // OPEN THREAD + MARK READ
     // =========================
     function openThread(threadId, mailId) {
 
         setActiveThread(threadId);
 
-        // instantly update UI
+        // instant UI update
         setInbox(prev =>
             prev.map(m =>
-                m.id === mailId
-                    ? { ...m, is_read: 1 }
-                    : m
+                m.id === mailId ? { ...m, is_read: 1 } : m
             )
         );
 
@@ -82,16 +84,13 @@ function EmailApp() {
     }
 
     // =========================
-    // DELETE EMAIL (FIXED + PERMANENT)
+    // DELETE EMAIL (FIXED)
     // =========================
     function deleteEmail(id) {
 
-        // instant UI update (no refresh needed)
         setInbox(prev =>
             prev.map(m =>
-                m.id === id
-                    ? { ...m, deleted: 1 }
-                    : m
+                m.id === id ? { ...m, deleted: 1 } : m
             )
         );
 
@@ -151,9 +150,11 @@ function EmailApp() {
     if (!email) return e("div", null, "Loading email...");
 
     // =========================
-    // FILTER VIEW
+    // FILTER VIEW (SAFE)
     // =========================
     const filtered = inbox.filter(m => {
+
+        if (!m) return false;
 
         if (view === "inbox") return !m.deleted;
         if (view === "sent") return m.sender === email && !m.deleted;
@@ -201,7 +202,6 @@ function EmailApp() {
         // MAIN AREA
         e("div", { className: "emailMain" },
 
-            // INBOX LIST
             !activeThread && filtered.map(m =>
                 e("div", {
                     key: m.id,
@@ -247,7 +247,6 @@ function EmailApp() {
                 )
             ),
 
-            // THREAD VIEW
             activeThread && e("div", null,
 
                 e("button", {
@@ -257,8 +256,7 @@ function EmailApp() {
 
                 thread.map(m =>
                     e("div", {
-                        key: m.id,
-                        className: "emailThreadItem"
+                        key: m.id
                     },
                         e("div", { style: { fontWeight: "bold" } }, m.sender),
                         e("div", null, m.body)
@@ -303,9 +301,7 @@ function EmailApp() {
                     onChange: (e) => setBody(e.target.value)
                 }),
 
-                e("div", {
-                    style: { display: "flex", gap: "10px" }
-                },
+                e("div", { style: { display: "flex", gap: "10px" } },
 
                     e("button", {
                         className: "secondary",

@@ -1,4 +1,3 @@
-
 local ESX = exports["es_extended"]:getSharedObject()
 
 --====================================
@@ -37,7 +36,7 @@ RegisterNetEvent("ez_email:requestEmail", function()
 end)
 
 --====================================
--- GET INBOX (FIXED: DELETE SUPPORT)
+-- GET INBOX (FIXED + SAFE)
 --====================================
 lib.callback.register("ez_email:getInbox", function(source, email)
 
@@ -47,7 +46,7 @@ lib.callback.register("ez_email:getInbox", function(source, email)
         SELECT *
         FROM ez_emails
         WHERE receiver = ?
-        AND (deleted IS NULL OR deleted = 0)
+        AND (deleted = 0 OR deleted IS NULL)
         ORDER BY created_at DESC
     ]], { email })
 
@@ -61,7 +60,10 @@ end)
 --====================================
 RegisterNetEvent("ez_email:markRead", function(id)
 
-    MySQL.update([[
+    id = tonumber(id)
+    if not id then return end
+
+    MySQL.update.await([[
         UPDATE ez_emails
         SET is_read = 1
         WHERE id = ?
@@ -70,17 +72,20 @@ RegisterNetEvent("ez_email:markRead", function(id)
 end)
 
 --====================================
--- DELETE EMAIL (PERMANENT FIX LOGIC)
+-- DELETE EMAIL (PERMANENT FLAG)
 --====================================
 RegisterNetEvent("ez_email:markDeleted", function(id)
 
-    MySQL.update([[
+    id = tonumber(id)
+    if not id then return end
+
+    local affected = MySQL.update.await([[
         UPDATE ez_emails
         SET deleted = 1
         WHERE id = ?
     ]], { id })
 
-    print("[EMAIL DEBUG] deleted email id:", id)
+    print(("[EMAIL DEBUG] deleted id=%s affected=%s"):format(id, affected))
 
 end)
 
@@ -95,7 +100,7 @@ RegisterNetEvent("ez_email:sendReply", function(data)
 
     local senderEmail = GetPlayerEmail(xPlayer)
 
-    MySQL.insert([[
+    MySQL.insert.await([[
         INSERT INTO ez_emails
         (thread_id, sender, receiver, subject, body, is_read, deleted, created_at)
         VALUES (?, ?, ?, ?, ?, 0, 0, ?)
