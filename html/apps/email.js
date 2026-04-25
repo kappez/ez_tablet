@@ -4,15 +4,35 @@ function EmailApp() {
 
     const [email, setEmail] = React.useState("");
     const [inbox, setInbox] = React.useState([]);
+
     const [view, setView] = React.useState("inbox");
     const [activeThread, setActiveThread] = React.useState(null);
 
     const [composing, setComposing] = React.useState(false);
+
     const [to, setTo] = React.useState("");
     const [subject, setSubject] = React.useState("");
     const [body, setBody] = React.useState("");
 
     const [reply, setReply] = React.useState("");
+
+    const [search, setSearch] = React.useState("");
+
+    // =========================
+    // TIME FORMAT
+    // =========================
+    function formatTime(timestamp) {
+        if (!timestamp) return "";
+
+        const date = new Date(timestamp * 1000);
+
+        return date.toLocaleString([], {
+            day: "2-digit",
+            month: "short",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+    }
 
     // =========================
     // INIT
@@ -26,40 +46,41 @@ function EmailApp() {
 
         const handler = (event) => {
             if (event.data?.type === "emailData") {
-                setEmail(event.data.email || "");
-                loadInbox(event.data.email);
+                setEmail(event.data.email);
+                loadInbox(event.data.email, "inbox");
             }
         };
 
         window.addEventListener("message", handler);
-
         return () => window.removeEventListener("message", handler);
 
     }, []);
 
     // =========================
-    // LOAD INBOX
+    // LOAD MAIL
     // =========================
-    function loadInbox(emailAddr) {
-
-        if (!emailAddr) return;
+    function loadInbox(emailAddr, folder = "inbox") {
 
         fetch(`https://${GetParentResourceName()}/getInbox`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: emailAddr })
+            body: JSON.stringify({
+                email: emailAddr,
+                folder: folder
+            })
         })
         .then(res => res.json())
-        .then(data => {
-            setInbox(Array.isArray(data) ? data : []);
-        });
+        .then(setInbox);
     }
 
     // =========================
-    // REFRESH
+    // VIEW CHANGE
     // =========================
-    function refresh() {
-        loadInbox(email);
+    function changeView(folder) {
+        setView(folder);
+        setActiveThread(null);
+        setComposing(false);
+        loadInbox(email, folder);
     }
 
     // =========================
@@ -69,7 +90,6 @@ function EmailApp() {
 
         setActiveThread(threadId);
 
-        // instant UI update
         setInbox(prev =>
             prev.map(m =>
                 m.id === mailId ? { ...m, is_read: 1 } : m
@@ -84,7 +104,7 @@ function EmailApp() {
     }
 
     // =========================
-    // DELETE EMAIL (FIXED)
+    // DELETE EMAIL
     // =========================
     function deleteEmail(id) {
 
@@ -107,7 +127,26 @@ function EmailApp() {
     function sendReply() {
 
         const thread = inbox.find(x => x.thread_id === activeThread);
-        if (!thread) return;
+        if (!thread || !reply.trim()) return;
+
+        const msg = reply;
+
+        setInbox(prev => [
+            ...prev,
+            {
+                id: Date.now(),
+                thread_id: activeThread,
+                sender: email,
+                receiver: thread.sender,
+                subject: thread.subject,
+                body: msg,
+                created_at: Math.floor(Date.now() / 1000),
+                is_read: 1,
+                deleted: 0
+            }
+        ]);
+
+        setReply("");
 
         fetch(`https://${GetParentResourceName()}/sendReply`, {
             method: "POST",
@@ -116,15 +155,13 @@ function EmailApp() {
                 thread_id: activeThread,
                 receiver: thread.sender,
                 subject: thread.subject,
-                body: reply
+                body: msg
             })
         });
-
-        setReply("");
     }
 
     // =========================
-    // SEND NEW EMAIL
+    // SEND EMAIL
     // =========================
     function sendEmail() {
 
@@ -147,23 +184,39 @@ function EmailApp() {
         setComposing(false);
     }
 
-    if (!email) return e("div", null, "Loading email...");
-
     // =========================
-    // FILTER VIEW (SAFE)
+    // FILTER + SEARCH
     // =========================
     const filtered = inbox.filter(m => {
 
         if (!m) return false;
 
-        if (view === "inbox") return !m.deleted;
-        if (view === "sent") return m.sender === email && !m.deleted;
-        if (view === "trash") return m.deleted;
+        const inFolder =
+            view === "inbox" ? !m.deleted :
+            view === "sent" ? (m.sender === email && !m.deleted) :
+            view === "trash" ? m.deleted :
+            true;
+
+        if (!inFolder) return false;
+
+        if (search.trim() !== "") {
+            const q = search.toLowerCase();
+
+            return (
+                (m.subject || "").toLowerCase().includes(q) ||
+                (m.sender || "").toLowerCase().includes(q) ||
+                (m.receiver || "").toLowerCase().includes(q)
+            );
+        }
 
         return true;
     });
 
-    const thread = inbox.filter(m => m.thread_id === activeThread);
+    const threadMessages = activeThread
+        ? inbox.filter(m => m.thread_id === activeThread)
+        : [];
+
+    if (!email) return e("div", null, "Loading email...");
 
     // =========================
     // UI
@@ -173,115 +226,34 @@ function EmailApp() {
         // SIDEBAR
         e("div", { className: "emailSidebar" },
 
-            e("button", {
-                className: view === "inbox" ? "active" : "",
-                onClick: () => setView("inbox")
-            }, "Inbox"),
+            e("button", { onClick: () => changeView("inbox"), className: view === "inbox" ? "active" : "" }, "Inbox"),
 
-            e("button", {
-                className: view === "sent" ? "active" : "",
-                onClick: () => setView("sent")
-            }, "Sent"),
+            e("button", { onClick: () => changeView("sent"), className: view === "sent" ? "active" : "" }, "Sent"),
 
-            e("button", {
-                className: view === "trash" ? "active" : "",
-                onClick: () => setView("trash")
-            }, "Trash"),
+            e("button", { onClick: () => changeView("trash"), className: view === "trash" ? "active" : "" }, "Trash"),
 
             e("button", {
                 className: "primary",
-                onClick: () => setComposing(true)
-            }, "Compose"),
-
-            e("button", {
-                className: "secondary",
-                onClick: refresh
-            }, "Refresh")
+                onClick: () => {
+                    setComposing(true);
+                    setActiveThread(null);
+                }
+            }, "Compose")
         ),
 
-        // MAIN AREA
+        // MAIN
         e("div", { className: "emailMain" },
 
-            !activeThread && filtered.map(m =>
-                e("div", {
-                    key: m.id,
-                    className: "emailItem",
-                    onClick: () => openThread(m.thread_id, m.id)
-                },
+            // SEARCH
+            e("input", {
+                className: "emailSearch",
+                placeholder: "Search emails...",
+                value: search,
+                onChange: (e) => setSearch(e.target.value)
+            }),
 
-                    e("div", {
-                        style: {
-                            display: "flex",
-                            justifyContent: "space-between"
-                        }
-                    },
-
-                        e("div", {
-                            style: {
-                                fontWeight: m.is_read ? "normal" : "bold"
-                            }
-                        }, m.subject),
-
-                        !m.is_read && e("div", {
-                            style: {
-                                width: "8px",
-                                height: "8px",
-                                borderRadius: "50%",
-                                background: "#3b82f6"
-                            }
-                        })
-                    ),
-
-                    e("div", {
-                        style: { fontSize: "12px", opacity: 0.7 }
-                    }, m.sender),
-
-                    e("button", {
-                        className: "secondary",
-                        style: { marginTop: "5px" },
-                        onClick: (ev) => {
-                            ev.stopPropagation();
-                            deleteEmail(m.id);
-                        }
-                    }, "Delete")
-                )
-            ),
-
-            activeThread && e("div", null,
-
-                e("button", {
-                    className: "secondary",
-                    onClick: () => setActiveThread(null)
-                }, "Back"),
-
-                thread.map(m =>
-                    e("div", {
-                        key: m.id
-                    },
-                        e("div", { style: { fontWeight: "bold" } }, m.sender),
-                        e("div", null, m.body)
-                    )
-                ),
-
-                e("textarea", {
-                    value: reply,
-                    onChange: (e) => setReply(e.target.value),
-                    placeholder: "Reply..."
-                }),
-
-                e("button", {
-                    className: "primary",
-                    onClick: sendReply
-                }, "Send Reply")
-            )
-        ),
-
-        // COMPOSE MODAL
-        composing && e("div", { className: "composeModal" },
-
-            e("div", { className: "composeBox" },
-
-                e("h3", null, "New Email"),
+            // COMPOSE
+            composing && e("div", { className: "composePanel" },
 
                 e("input", {
                     placeholder: "To",
@@ -301,18 +273,103 @@ function EmailApp() {
                     onChange: (e) => setBody(e.target.value)
                 }),
 
-                e("div", { style: { display: "flex", gap: "10px" } },
+                e("button", {
+                    className: "primary",
+                    onClick: sendEmail
+                }, "Send")
+            ),
 
-                    e("button", {
-                        className: "secondary",
-                        onClick: () => setComposing(false)
-                    }, "Cancel"),
+            // LIST
+            !activeThread && !composing && filtered.map(m =>
+                e("div", {
+                    key: m.id,
+                    className: "emailItem",
+                    onClick: () => openThread(m.thread_id, m.id)
+                },
 
-                    e("button", {
-                        className: "primary",
-                        onClick: sendEmail
-                    }, "Send")
+                    e("div", { className: "emailItemLeft" },
+
+                        e("div", {
+                            className: "emailSubject",
+                            style: { fontWeight: m.is_read ? "normal" : "bold" }
+                        }, m.subject),
+
+                        e("div", { className: "emailMeta" },
+                            view === "sent"
+                                ? `To: ${m.receiver || "unknown"}`
+                                : `From: ${m.sender || "unknown"}`,
+                            " • ",
+                            formatTime(m.created_at)
+                        )
+                    ),
+
+                    e("div", { className: "emailItemRight" },
+
+                        e("div", {
+                            style: {
+                                fontSize: "11px",
+                                marginRight: "8px",
+                                opacity: 0.8,
+                                color: m.is_read ? "#22c55e" : "#f59e0b"
+                            }
+                        }, m.is_read ? "Read" : "Unread"),
+
+                        e("button", {
+                            className: "deleteBtn",
+                            onClick: (ev) => {
+                                ev.stopPropagation();
+                                deleteEmail(m.id);
+                            }
+                        }, "✕")
+                    )
                 )
+            ),
+
+            // THREAD
+            activeThread && e("div", { className: "emailThreadView" },
+
+                e("div", { className: "emailThreadHeader" },
+
+                    e("div", { className: "emailThreadSubject" },
+                        threadMessages[0]?.subject
+                    ),
+
+                    e("div", { className: "emailThreadMeta" },
+
+                        e("div", null,
+                            "From: ", threadMessages[0]?.sender
+                        ),
+
+                        e("div", { style: { marginLeft: "10px" } },
+                            "To: ", threadMessages[0]?.receiver
+                        ),
+
+                        e("div", { style: { marginLeft: "10px", opacity: 0.7 } },
+                            formatTime(threadMessages[0]?.created_at)
+                        )
+                    )
+                ),
+
+                threadMessages.map(m =>
+                    e("div", {
+                        key: m.id,
+                        className: "emailThreadItem"
+                    },
+                        e("div", { style: { fontSize: "12px", opacity: 0.7 } }, m.sender),
+                        e("div", null, m.body)
+                    )
+                ),
+
+                e("textarea", {
+                    value: reply,
+                    onChange: (e) => setReply(e.target.value),
+                    placeholder: "Reply..."
+                }),
+
+                e("button", {
+                    className: "primary",
+                    onClick: sendReply
+                }, "Send Reply")
             )
         )
     );

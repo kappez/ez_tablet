@@ -22,7 +22,7 @@ body {
 }
 
 /* =========================
-   MAIN TABLET SHELL
+   TABLET SHELL
 ========================= */
 .tabletShell {
     position: relative;
@@ -42,7 +42,7 @@ body {
     box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65);
 }
 
-/* front camera dot */
+/* camera dot */
 .tabletShell::before {
     content: "";
     position: absolute;
@@ -57,7 +57,7 @@ body {
 }
 
 /* =========================
-   BACKGROUND LAYER
+   BACKGROUND
 ========================= */
 .tabletBackground {
     position: absolute;
@@ -160,22 +160,6 @@ body {
 }
 
 /* =========================
-   GENERIC APP PANEL STYLE
-========================= */
-.appPanel {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    height: 100%;
-}
-
-.appPanel div {
-    background: #1b1f2e;
-    padding: 10px;
-    border-radius: 8px;
-}
-
-/* =========================
    INPUTS
 ========================= */
 textarea,
@@ -195,7 +179,7 @@ input {
 }
 
 /* =========================
-   BUTTONS GLOBAL
+   BUTTONS
 ========================= */
 button {
     cursor: pointer;
@@ -223,23 +207,127 @@ button.secondary:hover {
     background: #3a4060;
 }
 
-.emailApp {
+/* =========================
+   EMAIL APP LAYOUT
+========================= */
+.emailAppLayout {
+    display: flex;
+    height: 100%;
+    gap: 10px;
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+.emailSidebar {
+    width: 140px;
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
+/* base sidebar buttons */
+.emailSidebar button {
+    padding: 8px;
+    background: #1b1f2e;
+    color: white;
+    text-align: left;
+
+    border-radius: 8px;
+    transition: 0.15s;
+}
+
+/* 🔥 hover effect (NOW MATCHES COMPOSE FEEL) */
+.emailSidebar button:hover {
+    background: #2a2f45;
+    transform: scale(1.02);
+}
+
+/* active tab */
+.emailSidebar button.active {
+    background: #3b82f6;
+    transform: scale(1.02);
+}
+
+/* =========================
+   MAIN AREA
+========================= */
+.emailMain {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+}
+
+/* =========================
+   EMAIL ITEM
+========================= */
 .emailItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
     background: #1b1f2e;
     padding: 10px;
-    border-radius: 8px;
+    border-radius: 10px;
+
     cursor: pointer;
+    transition: 0.15s;
 }
 
 .emailItem:hover {
     background: #23283a;
 }
 
+.emailItemLeft {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.emailSubject {
+    font-size: 14px;
+}
+
+.emailMeta {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+.emailItemRight {
+    display: flex;
+    align-items: center;
+}
+
+/* =========================
+   DELETE BUTTON
+========================= */
+.deleteBtn {
+    width: 28px;
+    height: 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 6px;
+
+    background: rgba(255, 80, 80, 0.15);
+    color: #ff5a5a;
+
+    font-size: 14px;
+
+    transition: 0.15s;
+}
+
+.deleteBtn:hover {
+    background: rgba(255, 80, 80, 0.3);
+}
+
+/* =========================
+   THREAD VIEW
+========================= */
 .emailThreadItem {
     background: #1b1f2e;
     padding: 10px;
@@ -247,21 +335,12 @@ button.secondary:hover {
     margin-bottom: 8px;
 }
 
-/* COMPOSE MODAL */
-.composeModal {
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.composeBox {
-    width: 400px;
-    background: #0f111a;
-    padding: 15px;
+/* =========================
+   COMPOSE PANEL
+========================= */
+.composePanel {
+    background: #1b1f2e;
+    padding: 12px;
     border-radius: 10px;
 
     display: flex;
@@ -269,33 +348,59 @@ button.secondary:hover {
     gap: 10px;
 }
 
-.emailAppLayout {
+.composeActions {
     display: flex;
-    height: 100%;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+/* =========================
+   THREAD VIEW
+========================= */
+.emailThreadView {
+    display: flex;
+    flex-direction: column;
     gap: 10px;
 }
 
-.emailSidebar {
-    width: 120px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.emailSidebar button {
-    padding: 8px;
+.emailThreadHeader {
     background: #1b1f2e;
-    color: white;
+    padding: 12px;
+    border-radius: 10px;
 }
 
-.emailSidebar button.active {
-    background: #3b82f6;
+.emailThreadSubject {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 6px;
 }
 
-.emailMain {
-    flex: 1;
+.emailThreadMeta {
+    font-size: 12px;
+    opacity: 0.8;
+    display: flex;
+}
+
+.emailThreadBody {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    overflow-y: auto;
+}
+
+.emailSearch {
+    padding: 10px;
+    border-radius: 8px;
+
+    background: #0f111a;
+    border: 1px solid #2a2f45;
+
+    color: white;
+
+    outline: none;
+
+    margin-bottom: 8px;
+}
+
+.emailSearch:focus {
+    border-color: #3b82f6;
 }
