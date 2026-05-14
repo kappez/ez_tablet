@@ -15,6 +15,7 @@ function HomeApp() {
         e("button", { onClick: () => open("yellowpages") }, "Yellow Pages"),
         e("button", { onClick: () => open("calculator") }, "Calculator"),
         e("button", { onClick: () => open("bank") }, "Bank"),
-        e("button", { onClick: () => open("cmd") }, "CMD")
+        e("button", { onClick: () => open("cmd") }, "CMD"),
+        e("button", { onClick: () => open("news")}, "News"),
     );
 }

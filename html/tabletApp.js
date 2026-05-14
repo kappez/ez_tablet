@@ -34,6 +34,10 @@ function TabletApp() {
             App = YellowPagesApp;
             break;
 
+         case "news":
+            App = NewsApp;
+            break;
+
         default:
             App = HomeApp;
             break;

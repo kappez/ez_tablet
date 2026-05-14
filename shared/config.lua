@@ -45,3 +45,5 @@ Config.Garages = {
         coords = vec3(216.4, -786.6, 30.8)
     }
 }
+
+Config.TimezoneOffset = 2 --UTC - DUING SUMMER 2 / SHOULD BE 1 IN WINTER

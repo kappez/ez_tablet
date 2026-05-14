@@ -24,6 +24,7 @@ files {
     'html/apps/email.js',
     'html/apps/YellowPages.js',
     'html/apps/garage.js',
+    'html/apps/news.js',
 }
 
 shared_scripts {
@@ -33,16 +34,19 @@ shared_scripts {
 }
 
 client_scripts {
-    'client/main.lua',
-    'client/email.lua',
-    'client/yellowpages.lua',
-    'client/garage.lua'
+    --'client/main.lua',
+    --'client/email.lua',
+    --'client/yellowpages.lua',
+    --'client/garage.lua'
+    'client/*.lua'
 }
 
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
-    'server/main.lua',
-    'server/email.lua',
-    'server/yellowpages.lua',
-    'server/garage.lua'
+    --'server/main.lua',
+    --'server/email.lua',
+    --'server/yellowpages.lua',
+    --'server/garage.lua',
+    --'server/garage.lua'
+    'server/*.lua'
 }
